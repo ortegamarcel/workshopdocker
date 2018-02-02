@@ -1,0 +1,41 @@
+# Inhalt für das Cheatsheet
+
+## docker Grundbefehle
+docker ps -a
+docker exec
+docker rm
+docker rmi
+docker start
+docker stop
+
+## docker run ...:
+-d = Startet den Container im Hintergrund.
+-it startet den Container im interactive-Modus, sodass man auf dem Container arbeiten kann.
+-p <host_port>:<container_port> mappt einen Port vom Container auf das Hostsystem
+--expose Öffnet einen oder mehrere Ports.
+-P mappt alle offenen Ports vom Container auf zufällige Hostsystem-Ports.
+--name gibt dem Container einen Namen, der anstelle der ID für Befehle verwendet werden kann
+-v <Datei_oder_Ordner_zum_mounten>[:<Ziel_auf_dem_Container>] Mountet den angegebenen Ordner vom Hostsystem auf den Container, sodass dieser auf Dateien zugreifen kann.
+-e <VARIABLEN_NAME>=<VARIABLEN_WERT> Definiert eine Umgebungsvariable für den Container.
+--link <container_name>[:<name_in_new_container>] Linkt einen bestehenden Container in den neuen, sodass sich der Container mit dem anderen Verbinden kann.
+
+## Dockfile-Befehle
+FROM - gibt das Start-Image an, das als Grundlage genommen wird
+RUN - führt einen beliebigen Befehl auf dem Container aus
+WORKDIR - ändert das Arbeitsverzeichnis vom Container. Alle nachfolgenden Befehle werden dort ausgeführt
+ADD - Mountet ein Volume
+COPY - Kopiert Dateien in den Container
+ARG - Definiert ein Argument. Kann mit $<ARG_NAME> darauf zugreifen.
+EXPOSE - öffnet Ports nach außen
+CMD - definiert den Default-Befehl
+ENTRYPOINT - Legt den Startbefehl fest. Er kann beim starten des Containers nicht “überschrieben” werden
+
+TIPP: Da bei jedem RUN ein neuer Container gecacht wird, kann man Befehle mit && aneinander hängen um die Anzahl der Images/Layer zu reduzieren.
+Bsp.: RUN apt-get update && apt-get upgrade
+
+### docker build
+-t <name> gibt dem Image einen Namen
+-f gibt den Pfad zur Dockerfile an. Wenn es nicht angegeben wird, wird die Dockerfile im Kontextverzeichnis gesucht
+--build-arg <ARG_NAME>=<ARG_VALUE> übergibt ein Argument an das Dockerfile
+
+## Docker Compose

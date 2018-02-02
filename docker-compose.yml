@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+
+    mysql-container:
+        image: test_mysql-container
+        build: 
+            context: .
+            dockerfile: /mysql-container/Dockerfile
+            args:
+                DATABASE_SCHEMA: /mysql-container/schema.sql
+        expose: 
+            - 3306
+        volumes:
+            - /var/lib/docker/mysql/data:/var/lib/mysql
+            - /var/lib/docker/mysql/config:/etc/mysql/conf.d
+            
+    studentservice:
+        image: test_studentservice
+        build:
+            context: .
+            dockerfile: /services/Dockerfile
+            args: 
+                JAR_FILE: /studentservice/student-0.1.jar
+                EXPOSE: 8090
+        ports:
+            - 8090:8090
+        deploy:
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+        links:
+            - mysql-container
+        command: ["/wait-for-it.sh", "mysql-container:3306", "-t", "120"]
+            
+    roomservice:
+        image: test_roomservice
+        build:
+            context: .
+            dockerfile: /services/Dockerfile
+            args: 
+                JAR_FILE: /roomservice/room-0.1.jar
+                EXPOSE: 8080
+        ports:
+            - 8081:8080
+        deploy:
+            replicas: 0
+            restart_policy:
+                condition: on-failure
+        links:
+            - mysql-container
+        command: ["/wait-for-it.sh", "mysql-container:3306", "-t", "120"]
+            
+    lectureservice:
+        image: test_lectureservice
+        build:
+            context: .
+            dockerfile: /services/Dockerfile
+            args: 
+                JAR_FILE: /lectureservice/lecture-0.1.jar
+                EXPOSE: 8070
+        ports:
+            - 8070:8070
+        deploy:
+            replicas: 0
+            restart_policy:
+                condition: on-failure
+        links:
+            - mysql-container
+        command: ["/wait-for-it.sh", "mysql-container:3306", "-t", "120"]
+        
+    frontend:
+        image: test_frontend
+        build: ./frontend
+        ports:
+            - 80:80

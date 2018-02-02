@@ -1,0 +1,25 @@
+# Start the mysql-docker-container
+
+docker run -d -p 32013:3306 --name mysql-container -v D:\Users\Marcel_Ortega\Docker\IWS\mysql-container\schema.sql:/data/schema.sql \
+-e MYSQL_ROOT_PASSWORD=root [-e MYSQL_DATABASE=Hochschule]* mysql:latest --initialize-insecure=TRUE --init-file=/data/schema.sql
+
+oder
+
+docker run -d --expose 3306 --name mysql-container -v D:\Users\Marcel_Ortega\Docker\IWS\mysql-container\schema.sql:/docker-entrypoint-initdb.d/schema.sql \
+-e MYSQL_ROOT_PASSWORD=root mysql:latest
+
+docker run ...:
+-d = Startet den Container im Hintergrund.
+-it startet den Container im interactive-Modus, sodass man auf dem Container arbeiten kann.
+-p [host_port]:[container_port] mappt einen Port vom Container auf das Hostsystem
+--expose Öffnet einen oder mehrere Ports.
+-P mappt alle offenen Ports vom Container auf zufällige Hostsystem-Ports.
+--name gibt dem Container einen Namen, der anstelle der ID für Befehle verwendet werden kann
+-v [Datei_oder_Ordner_zum_mounten]:[Ziel_auf_dem_Container]* Mountet den angegebenen Ordner vom Hostsystem auf den Container, sodass dieser auf Dateien zugreifen kann.
+-e [VARIABLEN_NAME]=[VARIABLEN_WERT] Definiert eine Umgebungsvariable für den Container.
+--link [container_name]:[name_in_new_container]* Linkt einen bestehenden Container in den neuen, sodass sich der Container mit dem anderen Verbinden kann.
+
+MySQL-Image:
+docker pull mysql:latest lädt die aktuellste Version von MySQL vom Docker Hub runter
+mysql benötigt zwei Umgebungsvariablen, MYSQL_ROOT_PASSWORD und MYSQL_DATABASE.
+Der mysql-Parameter --init-file=[/relativer/Pfad/zum/dump.sql] initialisiert die Datenbank mit einer SQL-Datei. Diese muss auf dem Container gemountet sein.
