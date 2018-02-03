@@ -1,0 +1,7 @@
+# Schritt für Schritt Anleitung zu Übung 3
+
+1. docker swarm init
+2. docker stack deploy -c docker-compose.yml workshopdocekr
+2.1. docker ps
+2.2. docker rm <docker_service_id> -f
+2.3. docker ps

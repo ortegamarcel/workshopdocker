@@ -1,0 +1,12 @@
+# Schritt für Schritt Anleitung zu Übung 1 - Service(s) starten - 30min
+
+Starten Sie die drei Microservices jeweils in einem eigenen Container, sodass sie auf die lokale MySQL-Datenbank zugreifen können.
+
+1. docker pull workshopdocker/mysql-container
+2. docker pull workshopdocker/frontend
+3. docker run -p 80:80 -i --name frontend workshopdocker/frontend
+3.1. evtl: docker start frontend
+4. docker run -d --name mysql-container -v /var/lib/docker/mysql/data:/var/lib/mysql workshopdocker/mysql-container
+5. docker run -d -p 8080:8080 -v <Pfad>/roomservice/room-0.1.jar:/data/app.jar --name roomservice --link mysql-container -e spring.datasource.url=jdbc:mysql://mysql-container:3306/hochschule -e spring.datasource.username=root -e spring.datasource.password=root java:8 java -jar /data/app.jar
+6. docker run -d -p 8070:8070 -v <Pfad>/lectureservice/lecture-0.1.jar:/data/app.jar --name lectureservice --link mysql-container -e spring.datasource.url=jdbc:mysql://mysql-container:3306/hochschule -e spring.datasource.username=root -e spring.datasource.password=root java:8 java -jar /data/app.jar
+7. docker run -d -p 8090:8090 -v <Pfad>/studentservice/student-0.1.jar:/data/app.jar --name studentservice --link mysql-container -e spring.datasource.url=jdbc:mysql://mysql-container:3306/hochschule -e spring.datasource.username=root -e spring.datasource.password=root java:8 java -jar /data/app.jar
